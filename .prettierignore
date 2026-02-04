@@ -1,0 +1,14 @@
+# Dependances
+node_modules
+var
+vendor
+assets/vendor
+
+# Publics repositories
+public/bundles
+public/build
+
+# Lock files
+composer.lock
+package-lock.json
+symfony.lock
