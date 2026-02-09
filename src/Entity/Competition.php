@@ -1,8 +1,9 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\CompetitionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CompetitionRepository::class)]
@@ -16,20 +17,21 @@ class Competition
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Championship::class, inversedBy: 'competitions')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?championship $championship_id = null;
+    private ?Championship $championship = null;
+
+    #[ORM\OneToMany(mappedBy: 'competition', targetEntity: Event::class)]
+    private Collection $events;
+
+    public function __construct()
+    {
+        $this->events = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     public function getName(): ?string
@@ -40,19 +42,43 @@ class Competition
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
-    public function getChampionshipId(): ?championship
+    public function getChampionship(): ?Championship
     {
-        return $this->championship_id;
+        return $this->championship;
     }
 
-    public function setChampionshipId(?championship $championship_id): static
+    public function setChampionship(?Championship $championship): static
     {
-        $this->championship_id = $championship_id;
+        $this->championship = $championship;
+        return $this;
+    }
 
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+    public function addEvent(Event $event): static
+    {
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
+            $event->setCompetition($this);
+        }
+        return $this;
+    }
+
+    public function removeEvent(Event $event): static
+    {
+        if ($this->events->removeElement($event)) {
+            if ($event->getCompetition() === $this) {
+                $event->setCompetition(null);
+            }
+        }
         return $this;
     }
 }
