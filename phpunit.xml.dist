@@ -11,11 +11,13 @@
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
 
+        <server name="KERNEL_CLASS" value="App\Kernel" />
     </php>
 
     <testsuites>
         <testsuite name="Project Test Suite">
             <directory>tests</directory>
+            <exclude>tests/E2E</exclude>
         </testsuite>
     </testsuites>
 
