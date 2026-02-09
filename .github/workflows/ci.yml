@@ -5,14 +5,18 @@ jobs:
   quality-check:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: mysql://root:root@127.0.0.1:3306/symfony_test?serverVersion=8.0
+
     services:
       mysql:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: root
-          ports: 3306:3306
-          options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          MYSQL_DATABASE: symfony_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - uses: actions/checkout@v4
