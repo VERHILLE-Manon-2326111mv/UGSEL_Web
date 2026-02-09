@@ -77,7 +77,7 @@ jobs:
 
       - name: Check Coverage Threshold (70%)
         run: |
-          PERCENT=$(php -r '$xml = simplexml_load_file("coverage.xml"); $metrics = $xml->xpath("//metrics"); echo (float) ($metrics[0]["coveredelements"] / $metrics[0]["elements"] * 100);')
+          PERCENT=$(php -r '$xml = simplexml_load_file("coverage.xml"); $metrics = $xml->xpath("//metrics"); $total = (float)$metrics[0]["elements"]; $covered = (float)$metrics[0]["coveredelements"]; echo ($total > 0) ? ($covered / $total * 100) : 100;')
           echo "Coverage: $PERCENT%"
           if (( $(echo "$PERCENT < 70" | bc -l) )); then exit 1; fi
 
