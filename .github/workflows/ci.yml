@@ -5,14 +5,23 @@ jobs:
   quality-check:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: root
+          ports: 3306:3306
+          options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
-          extensions: ctype, iconv, intl, pdo, pdo_mysql
-          coverage: none
+          extensions: ctype, iconv, intl, pdo, pdo_mysql, pcov
+          coverage: pcov
 
       - uses: actions/setup-node@v4
         with:
@@ -45,3 +54,34 @@ jobs:
       # JS Style (ESLint)
       - name: Run ESLint
         run: npm run lint
+
+      - name: Prepare Database for Tests
+        env:
+          DATABASE_URL: mysql://root:root@127.0.0.1:3306/symfony_test?serverVersion=8.0
+        run: |
+          php bin/console doctrine:database:create --env=test --if-not-exists
+          php bin/console doctrine:schema:create --env=test
+
+      - name: Run Tests & Coverage
+        env:
+          DATABASE_URL: mysql://root:root@127.0.0.1:3306/symfony_test?serverVersion=8.0
+        run: php bin/phpunit --coverage-clover coverage.xml
+
+      - name: Check Coverage Threshold (70%)
+        run: |
+          PERCENT=$(php -r '$xml = simplexml_load_file("coverage.xml"); $metrics = $xml->xpath("//metrics"); echo (float) ($metrics[0]["coveredelements"] / $metrics[0]["elements"] * 100);')
+          echo "Coverage: $PERCENT%"
+          if (( $(echo "$PERCENT < 70" | bc -l) )); then exit 1; fi
+
+      - name: Run Behat
+        env:
+          DATABASE_URL: mysql://root:root@127.0.0.1:3306/symfony_test?serverVersion=8.0
+        run: vendor/bin/behat
+
+      - name: Run Panther (E2E)
+        env:
+          DATABASE_URL: mysql://root:root@127.0.0.1:3306/symfony_test?serverVersion=8.0
+          PANTHER_CHROME_ARGUMENTS: '--headless --no-sandbox'
+        run: |
+          php -S 127.0.0.1:8000 -t public/ &
+          php bin/phpunit tests/E2E
