@@ -135,12 +135,29 @@ We use several layers of tests:
 ### Unit and Integration Tests (**PHPUnit**)
 Used to control each feature during the development phase.
 * **CI/CD Rule:** The pipeline imposes a minimum code coverage of **70%**.
+```bash
+# For run all the tests :
+php vendor/bin/phpunit tests/
+
+# For run a specific test class :
+php vendor/bin/phpunit tests/Unit/Entity/SportTest.php
+```
 
 ### Behavior Tests (**Behat**)
 These tests are centralized in the `test`branch. They allow for the validation of business scenarios.
 
 ### End-to-End Testing (**Panther**)
 Also located in the `test`branch, they simulate the behavior of a real user in a browser.
+```bash
+# To run a specific panther test :
+php bin/phpunit tests/SportControllerTest.php
+# To launch a panther test with an open browser (allows observing the interactions of the panther):
+PANTHER_NO_HEADLESS=1 php bin/phpunit tests/E2E/SportControllerTest.php
+
+# To run all test
+php bin/phpunit tests/E2E
+PANTHER_NO_HEADLESS=1 php bin/phpunit tests/E2E/
+```
 
 ## 6. Branch Protection & Workflow
 
