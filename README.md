@@ -60,15 +60,15 @@ To access the database directly in the container:
 ```bash
 docker exec -it ugsel_web-database-1 mysql -u root -p
 
-# use app_db;
-# SHOW DATABASES;
+# SHOW DATABASES
+# use app_db;;
 # SHOW TABLES;
 ```
 
 To update the database with the latest migrations:
-```bash
-php bin/console doctrine:migrations:migrate^C        
+```bash    
 php bin/console make:migration
+php bin/console doctrine:migrations:migrate 
 ```
 
 For the creation of a database
@@ -88,9 +88,13 @@ symfony server:start
 ```
 
 Use the link :
+
 http://127.0.0.1:8000/championship
+
 http://127.0.0.1:8000/sport
+
 http://127.0.0.1:8000/event
+
 http://127.0.0.1:8000/competition
 
 ##  3. Pull Request Policy
