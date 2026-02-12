@@ -34,6 +34,12 @@ Follow these steps to set up the project locally.
 1. Clone the project.
 2. Create the `.env` file from the `.env.example` file.
 
+For the database, replace the user and root by root :
+
+```bash
+DATABASE_URL="mysql://root:root@127.0.0.1:3306/app_db?serverVersion=8.0&charset=utf8mb4"
+```
+
 > ⚠️
 > If you run `composer install` **before** creating the `.env` file, you will encounter an error. Make sure to create the environment file first.
 
@@ -81,6 +87,11 @@ Symfony Server Launch
 symfony server:start
 ```
 
+Use the link :
+http://127.0.0.1:8000/championship
+http://127.0.0.1:8000/sport
+http://127.0.0.1:8000/event
+http://127.0.0.1:8000/competition
 
 ##  3. Pull Request Policy
 
