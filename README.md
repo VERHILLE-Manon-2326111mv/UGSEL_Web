@@ -151,12 +151,21 @@ Also located in the `test`branch, they simulate the behavior of a real user in a
 ```bash
 # To run a specific panther test :
 php bin/phpunit tests/SportControllerTest.php
+
+
 # To launch a panther test with an open browser (allows observing the interactions of the panther):
 PANTHER_NO_HEADLESS=1 php bin/phpunit tests/E2E/SportControllerTest.php
 
 # To run all test
 php bin/phpunit tests/E2E
 PANTHER_NO_HEADLESS=1 php bin/phpunit tests/E2E/
+```
+
+> ⚠️
+> Only 2 command panther work (test on Linux)
+```bash
+PANTHER_NO_HEADLESS=1 php bin/phpunit tests/E2E/SportE2ETest 
+PANTHER_NO_HEADLESS=1 php bin/phpunit tests/E2E/ChampionshipE2ETest
 ```
 
 ## 6. Branch Protection & Workflow
